@@ -1,0 +1,36 @@
+import os
+import numpy as np
+import cv2
+import tensorflow as tf
+from tensorflow.keras import layers, models
+autoencoder = autoencoder_model()
+images = load_preprocessed_images_from_directory('/content/HACKATHON')
+def autoencoder_model():
+    inputs = tf.keras.Input(shape=(image_height, image_width, num_channels))
+
+    # Encoder
+    flattened = layers.Flatten()(inputs)
+    encoded = layers.Dense(encoding_dim, activation='relu')(flattened)
+    contours, _ = cv2.findContours(closed_edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 35000: # Set minimum area threshold
+            cv2.drawContours(image_copy, [contour], -1, (0, 255, 0), 5)
+
+    # Decoder
+    decoded = layers.Dense(image_height * image_width * num_channels, activation='sigmoid')(encoded)
+    outputs = layers.Reshape((image_height, image_width, num_channels))(decoded)
+
+
+        model = tf.keras.Model(inputs=inputs, outputs=outputs)
+    return model
+
+autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+autoencoder.fit(images, images, epochs=num_epochs, batch_size=batch_size)
+images = autoencoder.predict(images)
+
+cv2_imshow(image_copy)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
